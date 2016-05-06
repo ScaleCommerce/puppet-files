@@ -1,0 +1,14 @@
+{
+  "name": "scalecommerce-sc_files",
+  "version": "0.1.0",
+  "author": "scalecommerce",
+  "summary": "Manage file-ressources in hiera",
+  "license": "Apache 2.0",
+  "source": "https://github.com/ScaleCommerce/puppet-sc_files.git",
+  "project_page": "https://github.com/ScaleCommerce/puppet-sc_files.git",
+  "issues_url": "https://github.com/ScaleCommerce/puppet-sc_files.git",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
+
