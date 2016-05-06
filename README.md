@@ -5,6 +5,7 @@
 1. [Overview](#overview)
 1. [Module Description - What the module does and why it is useful](#module-description)
 1. [Setup - What you need to do before using this module](#setup)
+1. [Hiera Variables - What you need to configure in hiera](#hiera-variables)
 1. [Usage - Configuration options and additional functionality](#usage)
 
 ## Overview
@@ -25,6 +26,14 @@ ln -s /path/to/yourdata/files files
 ln -s /path/to/yourdata/templates templates
 ```
 
+## Hiera Varibales
+
+`sc_files::files` Hash of file resources, see [Puppet File Reference](https://docs.puppet.com/puppet/latest/reference/type.html#file) for documentation of params.
+
+`sc_files::templates` Maps wchich template should be used for a file, see [Usage](#usage) for examples.
+
+`sc_files::template_vars` You can use these variables in your templates like `<%= @template_vars['my_var'] %>`. These variable are global for all templates you might want to prefix their names somehow.
+
 ## Usage
 
 Write a simple file:
@@ -42,4 +51,26 @@ Create a recursive directory structure:
 sc_files::files:
   ['/tmp/test/', '/tmp/test/sub/', '/tmp/test/sub/foo/']:
     enusre: directory
+```
+
+Copy a file from `file` path or any other module:
+
+```
+sc_files::files:
+  '/tmp/foo.bar':
+    source: 'puppet:///modules/sc_files/foo.bar'
+```
+
+Create a file from template with template variables:
+
+```
+sc_files::files:
+  '/tmp/moo.bar':
+    ensure: present
+
+sc_files::templates:
+  '/tmp/moo.bar': 'sc_files/moo.bar.erb'
+
+sc_files::template_vars:
+  'my_var': 'Hello World.'`
 ```
