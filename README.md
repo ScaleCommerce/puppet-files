@@ -1,4 +1,4 @@
-# sc_files
+# files
 
 #### Table of Contents
 
@@ -21,56 +21,83 @@ This is a wrapper module to manage puppet file-resources in hiera.
 This module also abstracts templates and static files features. In order to use this you need to symlink `files` and `templates` in the module directory to a path or repository containing your files and templates.
 
 ```
-cd /etc/puppet/modules/sc_files
-ln -s /path/to/yourdata/files files
-ln -s /path/to/yourdata/templates templates
+cd /etc/puppet/modules/files
+ln -s /path/to/yourdata/files
+ln -s /path/to/yourdata/templates
 ```
 
 ## Hiera Varibales
 
-`sc_files::files` Hash of file resources, see [Puppet File Reference](https://docs.puppet.com/puppet/latest/reference/type.html#file) for documentation of params.
+`files` Hash of file resources, see [Puppet File Reference](https://docs.puppet.com/puppet/latest/reference/type.html#file) for documentation of params.
 
-`sc_files::templates` Configure which template should be used for a file, see [Usage](#usage) for examples.
+`files::templates` Configure which template should be used for a file, see [Usage](#usage) for examples.
 
-`sc_files::template_vars` You can use these variables in your templates like `<%= @template_vars['my_var'] %>`. These variables are global for all templates, you might want to prefix their names somehow.
+`files::template_vars` You can use these variables in your templates like `<%= @template_vars['my_var'] %>`. These variables are global for all templates, you might want to prefix their names somehow.
 
 ## Usage
 
 Write a simple file:
 
 ```
-sc_files::files:
-  '/tmp/test/':
-    ensure: present
-    content: 'foo'
+files:
+  /tmp/test.txt:
+    content: foo
+```
+
+Multiline example:
+
+```
+files:
+  /tmp/multi.txt:
+    content: |+
+             This is a
+             file with a
+             lot of lines.
+```
+
+Hiera variables in content, see [documentation for hiera lookup functions](https://docs.puppet.com/hiera/3.3/puppet.html#hiera-lookup-functions):
+
+```
+host_ip: 192.168.1.1
+
+files:
+  /tmp/test.txt:
+    content: My ip is %{hiera('host_ip')}
 ```
 
 Create a recursive directory structure:
 
 ```
-sc_files::files:
-  ['/tmp/test/', '/tmp/test/sub/', '/tmp/test/sub/foo/']:
+files:
+  ['/tmp/test/', '/tmp/test/sub/', '/tmp/test/sub/bar/']:
     ensure: directory
 ```
 
-Copy a file from local or any other module's `file` path:
+Copy a file from this or any other module's `file` path:
 
 ```
-sc_files::files:
-  '/tmp/foo.bar':
-    source: 'puppet:///modules/sc_files/foo.bar'
+files:
+  /tmp/foo.bar:
+    source: puppet:///modules/files/foo.bar
+  /tmp/my.file
+    source: puppet:///modules/<other module name>/my.file
+  /tmp/local.txt
+    source: /my/path/local.txt
+
 ```
 
-Create a file from local or any other module's `template` with template variables:
+To create a file from this or any other module's `template` path, you need to declare at least an empty file resource and then assign a template to the title of the file resource. Optionally use template variables:
 
 ```
-sc_files::files:
-  '/tmp/moo.bar':
-    ensure: present
+files:
+  /tmp/moo.bar:
+    owner: www-data
+  /tmp/vhost.conf: {}
 
-sc_files::templates:
-  '/tmp/moo.bar': 'sc_files/moo.bar.erb'
+files::templates:
+  /tmp/moo.bar: files/moo.bar.erb
+  /tmp/vhost.conf: <other module name>/vhost.erb
 
-sc_files::template_vars:
-  'my_var': 'Hello World.'
+files::template_vars:
+  my_var: Hello World.
 ```
