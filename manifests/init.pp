@@ -2,7 +2,7 @@
 #
 # Creates file resources from hiera hash
 #
-class sc_files (
+class files (
   $template_vars = {},
   $templates = {}
 ){
