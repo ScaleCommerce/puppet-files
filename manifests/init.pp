@@ -11,6 +11,6 @@ class files (
 
   # loop through template hash append template function to files
   each($templates) |$k, $v| {
-    File <| title == $k |> { content => template("files/$v") }
+    File <| title == $k |> { content => template("$v") }
   }
 }
