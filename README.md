@@ -26,7 +26,7 @@ ln -s /path/to/yourdata/files
 ln -s /path/to/yourdata/templates
 ```
 
-## Hiera Varibales
+## Hiera Variables
 
 `files` Hash of file resources, see [Puppet File Reference](https://docs.puppet.com/puppet/latest/reference/type.html#file) for documentation of params.
 
